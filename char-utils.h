@@ -1,5 +1,5 @@
 /*
-    Macros
+    Char Utility Macros
     Author: Brian Khuu (2025)
 
     # MIT License
