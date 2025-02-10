@@ -103,6 +103,7 @@
 #define NIBBLE_TO_HEX_LOWER(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'a'))
 
 /* Slightly safer implemention of digit/hex conversion. Check that we are actually dealing with digit or hex */
+// Depreciation Consideration Warning: https://github.com/mofosyne/char-utils.h/issues/1
 #define SAFE_DIGIT_TO_ASCII(num) ((unsigned)(num) < 10 ? DIGIT_TO_ASCII(num) : '\0')
 #define SAFE_ASCII_TO_DIGIT(ch) (IS_DIGIT(ch) ? ASCII_TO_DIGIT(ch) : -1)
 #define SAFE_HEX_TO_INT(ch) (IS_DIGIT(ch) ? ((ch) - '0') : (((ch) >= 'A' && (ch) <= 'F') ? ((ch) - 'A' + 10) : (((ch) >= 'a' && (ch) <= 'f') ? ((ch) - 'a' + 10) : -1)))
