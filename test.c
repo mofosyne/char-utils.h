@@ -1,5 +1,6 @@
 #include "char-utils.h"
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -7,29 +8,126 @@ static_assert(CHARUTIL_DIGIT_COUNT == CHARUTIL_DIGIT_COUNT_GROKKABLE);
 static_assert(CHARUTIL_ALPHABET_COUNT == CHARUTIL_ALPHABET_COUNT_GROKKABLE);
 static_assert(CHARUTIL_ALPHANUMERIC_COUNT == CHARUTIL_ALPHANUMERIC_COUNT_GROKKABLE);
 
+bool check_if_character_is_accepted(unsigned ch, const char *accept, unsigned accept_count)
+{
+    for (int i = 0; i < accept_count; i++)
+    {
+        if (ch == accept[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void test_character_checks(void)
 {
     // Test basic checks
-    assert(IS_DIGIT('5') && !IS_DIGIT('a'));
-    assert(IS_LOWER('a') && !IS_LOWER('A'));
-    assert(IS_UPPER('Z') && !IS_UPPER('z'));
     assert(IS_ALPHA('a') && IS_ALPHA('Z') && !IS_ALPHA('5'));
     assert(IS_ALNUM('a') && IS_ALNUM('5') && !IS_ALNUM('#'));
     assert(IS_HEX_DIGIT('F') && IS_HEX_DIGIT('f') && !IS_HEX_DIGIT('G'));
-    assert(IS_SPACE(' ') && IS_SPACE('\n') && !IS_SPACE('x'));
+    assert(IS_PRINTABLE('F') && IS_PRINTABLE('f') && !IS_PRINTABLE('\0'));
+
+    assert(IS_ASCII('a') && IS_ASCII('b') && !IS_ASCII(1 << 7));
+    assert(IS_EXTENDED_ASCII(' ') && IS_EXTENDED_ASCII(1 << 7) && !IS_EXTENDED_ASCII(1 << 8));
+
+    assert(IS_SPACE(' ') && IS_SPACE('\n') && !IS_SPACE('3'));
+    assert(IS_PUNCT('\'') && IS_PUNCT('[') && !IS_PUNCT('3'));
+    assert(IS_PUNCT('\'') && IS_PUNCT('[') && !IS_PUNCT('3'));
 
     for (int ch = -0x1FF; ch < 0x1FF; ch++)
     {
-        assert(IS_DIGIT(ch) == IS_DIGIT_GROKKABLE(ch));
-        assert(IS_LOWER(ch) == IS_LOWER_GROKKABLE(ch));
-        assert(IS_UPPER(ch) == IS_UPPER_GROKKABLE(ch));
-        assert(IS_ALPHA(ch) == IS_ALPHA_GROKKABLE(ch));
-        assert(IS_ALNUM(ch) == IS_ALNUM_GROKKABLE(ch));
-        assert(IS_HEX_DIGIT(ch) == IS_HEX_DIGIT_GROKKABLE(ch));
-        assert(IS_SPACE(ch) == IS_SPACE_GROKKABLE(ch));
-        assert(IS_PRINTABLE(ch) == IS_PRINTABLE_GROKKABLE(ch));
-        assert(IS_ASCII(ch) == IS_ASCII_GROKKABLE(ch));
-        assert(IS_EXTENDED_ASCII(ch) == IS_EXTENDED_ASCII_GROKKABLE(ch));
+        const char accept[] = "0123456789";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_DIGIT(ch) == accepted);
+        assert(IS_DIGIT_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "abcdefghijklmnopqrstuvwxyz";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_LOWER(ch) == accepted);
+        assert(IS_LOWER_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_UPPER(ch) == accepted);
+        assert(IS_UPPER_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_ALPHA(ch) == accepted);
+        assert(IS_ALPHA_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_ALNUM(ch) == accepted);
+        assert(IS_ALNUM_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "0123456789ABCDEFabcdef";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_HEX_DIGIT(ch) == accepted);
+        assert(IS_HEX_DIGIT_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}:\"<>?[];',./\\ -=`|~";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_PRINTABLE(ch) == accepted);
+        assert(IS_PRINTABLE_GROKKABLE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        assert(IS_ASCII(ch) == ((0 <= ch) && (ch < 128)));
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        assert(IS_EXTENDED_ASCII(ch) == ((0 <= ch) && (ch < 256)));
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = " \t\n\r\f\v";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_SPACE(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "!@#$%^&*()_+{}:\"<>?[];',./\\-=`|~";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_PUNCT(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "()[]{}";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_BRACKET(ch) == accepted);
+    }
+
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "!@#$%^&*_+:\"<>?;',./\\-=`|~";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        printf("%x, '%c'\n", ch);
+        assert(IS_SYMBOL(ch) == accepted);
     }
 
     printf("Character checks passed!\n");

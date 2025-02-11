@@ -55,16 +55,21 @@
 /* ==========================
  * Character Type Checks
  * ========================== */
-#define IS_DIGIT(ch) ((unsigned)((ch) - '0') < CHARUTIL_DIGIT_COUNT)                                               ///< Equivalent to isdigit() from <ctype.h>
-#define IS_LOWER(ch) ((unsigned)((ch) - 'a') < CHARUTIL_ALPHABET_COUNT)                                            ///< Equivalent to islower() from <ctype.h>
-#define IS_UPPER(ch) ((unsigned)((ch) - 'A') < CHARUTIL_ALPHABET_COUNT)                                            ///< Equivalent to isupper() from <ctype.h>
-#define IS_ALPHA(ch) (IS_LOWER(ch) || IS_UPPER(ch))                                                                ///< Equivalent to isalpha() from <ctype.h>
-#define IS_ALNUM(ch) (IS_DIGIT(ch) || IS_ALPHA(ch))                                                                ///< Equivalent to isalnum() from <ctype.h>
-#define IS_HEX_DIGIT(ch) (IS_DIGIT(ch) || ((unsigned)((ch) - 'A') < 6) || ((unsigned)((ch) - 'a') < 6))            ///< Equivalent to isxdigit() from <ctype.h>
+#define IS_DIGIT(ch) ((unsigned)((ch) - '0') < CHARUTIL_DIGIT_COUNT)                                    ///< single unsigned cmp, no branches for speed. Equivalent to isdigit() from <ctype.h>
+#define IS_LOWER(ch) ((unsigned)((ch) - 'a') < CHARUTIL_ALPHABET_COUNT)                                 ///< single unsigned cmp, no branches for speed. Equivalent to islower() from <ctype.h>
+#define IS_UPPER(ch) ((unsigned)((ch) - 'A') < CHARUTIL_ALPHABET_COUNT)                                 ///< single unsigned cmp, no branches for speed. Equivalent to isupper() from <ctype.h>
+#define IS_ALPHA(ch) (IS_LOWER(ch) || IS_UPPER(ch))                                                     ///< Equivalent to isalpha() from <ctype.h>
+#define IS_ALNUM(ch) (IS_DIGIT(ch) || IS_ALPHA(ch))                                                     ///< Equivalent to isalnum() from <ctype.h>
+#define IS_HEX_DIGIT(ch) (IS_DIGIT(ch) || ((unsigned)((ch) - 'A') < 6) || ((unsigned)((ch) - 'a') < 6)) ///< Equivalent to isxdigit() from <ctype.h>
+#define IS_PRINTABLE(ch) ((unsigned)((ch) - 32) < 95)                                                   ///< single unsigned cmp, no branches for speed. Equivalent to isprint() from <ctype.h>
+
+#define IS_ASCII(ch) ((unsigned)(ch) < 128)          ///< single unsigned cmp, no branches for speed.
+#define IS_EXTENDED_ASCII(ch) ((unsigned)(ch) < 256) ///< single unsigned cmp, no branches for speed.
+
 #define IS_SPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v') ///< Equivalent to isspace() from <ctype.h>
-#define IS_PRINTABLE(ch) ((unsigned)((ch) - 32) < 95)                                                              ///< Equivalent to isprint() from <ctype.h>
-#define IS_ASCII(ch) ((unsigned)(ch) < 128)
-#define IS_EXTENDED_ASCII(ch) ((unsigned)(ch) < 256)
+#define IS_PUNCT(ch) ((IS_PRINTABLE(ch)) && !(IS_ALNUM(ch) || IS_SPACE(ch)))
+#define IS_BRACKET(ch) ((ch) == '(' || (ch) == ')' || (ch) == '{' || (ch) == '}' || (ch) == '[' || (ch) == ']')
+#define IS_SYMBOL(ch) ((IS_PUNCT(ch)) && !(IS_BRACKET(ch)))
 
 /* Grokkable Version (Slower but more understandable. Fast if compiler optimisation is enabled) */
 #define IS_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9')                                                                     ///< Equivalent to isdigit() from <ctype.h>
@@ -73,10 +78,7 @@
 #define IS_ALPHA_GROKKABLE(ch) (('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))                                   ///< Equivalent to isalpha() from <ctype.h>
 #define IS_ALNUM_GROKKABLE(ch) (('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))   ///< Equivalent to isalnum() from <ctype.h>
 #define IS_HEX_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'f') || ('A' <= (ch) && (ch) <= 'F') ///< Equivalent to isxdigit() from <ctype.h>
-#define IS_SPACE_GROKKABLE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v')    ///< Equivalent to isspace() from <ctype.h>
 #define IS_PRINTABLE_GROKKABLE(ch) (' ' <= (ch) && (ch) <= '~')                                                                 ///< Equivalent to isprint() from <ctype.h>
-#define IS_ASCII_GROKKABLE(ch) ((unsigned)(ch) < (1 << 7))
-#define IS_EXTENDED_ASCII_GROKKABLE(ch) ((unsigned)(ch) < (1 << 8))
 
 /* ==========================
  * Character Case Conversion
