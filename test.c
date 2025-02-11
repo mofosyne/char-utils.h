@@ -37,59 +37,59 @@ void test_character_checks(void)
 
 void test_case_conversion(void)
 {
-    // Test basic conversions
-    {
-        char in[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        char out[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
-        {
-            assert(TO_UPPER(in[i]) == out[i]);
-        }
-    }
-
-    {
-        char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        char out[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
-        {
-            assert(TO_LOWER(in[i]) == out[i]);
-        }
-    }
-
-    {
-        char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        char out[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
-        {
-            assert(TOGGLE_CASE(in[i]) == out[i]);
-        }
-    }
-
     // Test safe conversions (non alphabet characters are passed through)
     {
-        char in[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        char inn[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         char out[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
         {
-            assert(SAFE_TO_UPPER(in[i]) == out[i]);
+            assert(TO_UPPER(inn[i]) == out[i]);
         }
     }
 
     {
-        char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        char inn[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         char out[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
         {
-            assert(SAFE_TO_LOWER(in[i]) == out[i]);
+            assert(TO_LOWER(inn[i]) == out[i]);
         }
     }
 
     {
-        char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        char inn[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         char out[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        for (int i = 0; i < (sizeof(in) - 1); i++)
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
         {
-            assert(SAFE_TOGGLE_CASE(in[i]) == out[i]);
+            assert(TOGGLE_CASE(inn[i]) == out[i]);
+        }
+    }
+
+    // Test basic conversions
+    {
+        char inn[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char out[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
+        {
+            assert(FAST_TO_UPPER(inn[i]) == out[i]);
+        }
+    }
+
+    {
+        char inn[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        char out[] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
+        {
+            assert(FAST_TO_LOWER(inn[i]) == out[i]);
+        }
+    }
+
+    {
+        char inn[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        char out[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for (int i = 0; i < (sizeof(inn) - 1); i++)
+        {
+            assert(FAST_TOGGLE_CASE(inn[i]) == out[i]);
         }
     }
 
@@ -98,17 +98,20 @@ void test_case_conversion(void)
 
 void test_conversions(void)
 {
-    // Test basic conversions
-    assert(DIGIT_TO_ASCII(0) == '0');
-    assert(DIGIT_TO_ASCII(1) == '1');
-    assert(DIGIT_TO_ASCII(2) == '2');
-    assert(DIGIT_TO_ASCII(3) == '3');
-    assert(DIGIT_TO_ASCII(4) == '4');
-    assert(DIGIT_TO_ASCII(5) == '5');
-    assert(DIGIT_TO_ASCII(6) == '6');
-    assert(DIGIT_TO_ASCII(7) == '7');
-    assert(DIGIT_TO_ASCII(8) == '8');
-    assert(DIGIT_TO_ASCII(9) == '9');
+    // Test safe conversions
+
+    assert(DIGIT_TO_ASCII(0, -1) == '0');
+    assert(DIGIT_TO_ASCII(1, -1) == '1');
+    assert(DIGIT_TO_ASCII(2, -1) == '2');
+    assert(DIGIT_TO_ASCII(3, -1) == '3');
+    assert(DIGIT_TO_ASCII(4, -1) == '4');
+    assert(DIGIT_TO_ASCII(5, -1) == '5');
+    assert(DIGIT_TO_ASCII(6, -1) == '6');
+    assert(DIGIT_TO_ASCII(7, -1) == '7');
+    assert(DIGIT_TO_ASCII(8, -1) == '8');
+    assert(DIGIT_TO_ASCII(9, -1) == '9');
+    assert(DIGIT_TO_ASCII(10, -1) == -1);
+    assert(DIGIT_TO_ASCII(-10, -1) == -1);
 
     assert(ASCII_TO_DIGIT('0') == 0);
     assert(ASCII_TO_DIGIT('1') == 1);
@@ -120,186 +123,161 @@ void test_conversions(void)
     assert(ASCII_TO_DIGIT('7') == 7);
     assert(ASCII_TO_DIGIT('8') == 8);
     assert(ASCII_TO_DIGIT('9') == 9);
+    assert(ASCII_TO_DIGIT('\0') == -1);
+    assert(ASCII_TO_DIGIT('X') == -1);
 
-    assert(HEX_TO_INT('0') == 0x00);
-    assert(HEX_TO_INT('1') == 0x01);
-    assert(HEX_TO_INT('2') == 0x02);
-    assert(HEX_TO_INT('3') == 0x03);
-    assert(HEX_TO_INT('4') == 0x04);
-    assert(HEX_TO_INT('5') == 0x05);
-    assert(HEX_TO_INT('6') == 0x06);
-    assert(HEX_TO_INT('7') == 0x07);
-    assert(HEX_TO_INT('8') == 0x08);
-    assert(HEX_TO_INT('9') == 0x09);
-    assert(HEX_TO_INT('a') == 0x0A);
-    assert(HEX_TO_INT('b') == 0x0B);
-    assert(HEX_TO_INT('c') == 0x0C);
-    assert(HEX_TO_INT('d') == 0x0D);
-    assert(HEX_TO_INT('e') == 0x0E);
-    assert(HEX_TO_INT('f') == 0x0F);
-    assert(HEX_TO_INT('A') == 0x0A);
-    assert(HEX_TO_INT('B') == 0x0B);
-    assert(HEX_TO_INT('C') == 0x0C);
-    assert(HEX_TO_INT('D') == 0x0D);
-    assert(HEX_TO_INT('E') == 0x0E);
-    assert(HEX_TO_INT('F') == 0x0F);
+    // Test basic conversions
+    assert(FAST_DIGIT_TO_ASCII(0) == '0');
+    assert(FAST_DIGIT_TO_ASCII(1) == '1');
+    assert(FAST_DIGIT_TO_ASCII(2) == '2');
+    assert(FAST_DIGIT_TO_ASCII(3) == '3');
+    assert(FAST_DIGIT_TO_ASCII(4) == '4');
+    assert(FAST_DIGIT_TO_ASCII(5) == '5');
+    assert(FAST_DIGIT_TO_ASCII(6) == '6');
+    assert(FAST_DIGIT_TO_ASCII(7) == '7');
+    assert(FAST_DIGIT_TO_ASCII(8) == '8');
+    assert(FAST_DIGIT_TO_ASCII(9) == '9');
 
-    assert(NIBBLE_TO_HEX(0x00) == '0');
-    assert(NIBBLE_TO_HEX(0x01) == '1');
-    assert(NIBBLE_TO_HEX(0x02) == '2');
-    assert(NIBBLE_TO_HEX(0x03) == '3');
-    assert(NIBBLE_TO_HEX(0x04) == '4');
-    assert(NIBBLE_TO_HEX(0x05) == '5');
-    assert(NIBBLE_TO_HEX(0x06) == '6');
-    assert(NIBBLE_TO_HEX(0x07) == '7');
-    assert(NIBBLE_TO_HEX(0x08) == '8');
-    assert(NIBBLE_TO_HEX(0x09) == '9');
-    assert(NIBBLE_TO_HEX(0x0A) == 'A');
-    assert(NIBBLE_TO_HEX(0x0B) == 'B');
-    assert(NIBBLE_TO_HEX(0x0C) == 'C');
-    assert(NIBBLE_TO_HEX(0x0D) == 'D');
-    assert(NIBBLE_TO_HEX(0x0E) == 'E');
-    assert(NIBBLE_TO_HEX(0x0F) == 'F');
+    assert(FAST_ASCII_TO_DIGIT('0') == 0);
+    assert(FAST_ASCII_TO_DIGIT('1') == 1);
+    assert(FAST_ASCII_TO_DIGIT('2') == 2);
+    assert(FAST_ASCII_TO_DIGIT('3') == 3);
+    assert(FAST_ASCII_TO_DIGIT('4') == 4);
+    assert(FAST_ASCII_TO_DIGIT('5') == 5);
+    assert(FAST_ASCII_TO_DIGIT('6') == 6);
+    assert(FAST_ASCII_TO_DIGIT('7') == 7);
+    assert(FAST_ASCII_TO_DIGIT('8') == 8);
+    assert(FAST_ASCII_TO_DIGIT('9') == 9);
 
-    assert(NIBBLE_TO_HEX_UPPER(0x00) == '0');
-    assert(NIBBLE_TO_HEX_UPPER(0x01) == '1');
-    assert(NIBBLE_TO_HEX_UPPER(0x02) == '2');
-    assert(NIBBLE_TO_HEX_UPPER(0x03) == '3');
-    assert(NIBBLE_TO_HEX_UPPER(0x04) == '4');
-    assert(NIBBLE_TO_HEX_UPPER(0x05) == '5');
-    assert(NIBBLE_TO_HEX_UPPER(0x06) == '6');
-    assert(NIBBLE_TO_HEX_UPPER(0x07) == '7');
-    assert(NIBBLE_TO_HEX_UPPER(0x08) == '8');
-    assert(NIBBLE_TO_HEX_UPPER(0x09) == '9');
-    assert(NIBBLE_TO_HEX_UPPER(0x0A) == 'A');
-    assert(NIBBLE_TO_HEX_UPPER(0x0B) == 'B');
-    assert(NIBBLE_TO_HEX_UPPER(0x0C) == 'C');
-    assert(NIBBLE_TO_HEX_UPPER(0x0D) == 'D');
-    assert(NIBBLE_TO_HEX_UPPER(0x0E) == 'E');
-    assert(NIBBLE_TO_HEX_UPPER(0x0F) == 'F');
+    assert(HEX_TO_INT('0', -1) == 0x00);
+    assert(HEX_TO_INT('1', -1) == 0x01);
+    assert(HEX_TO_INT('2', -1) == 0x02);
+    assert(HEX_TO_INT('3', -1) == 0x03);
+    assert(HEX_TO_INT('4', -1) == 0x04);
+    assert(HEX_TO_INT('5', -1) == 0x05);
+    assert(HEX_TO_INT('6', -1) == 0x06);
+    assert(HEX_TO_INT('7', -1) == 0x07);
+    assert(HEX_TO_INT('8', -1) == 0x08);
+    assert(HEX_TO_INT('9', -1) == 0x09);
+    assert(HEX_TO_INT('a', -1) == 0x0A);
+    assert(HEX_TO_INT('b', -1) == 0x0B);
+    assert(HEX_TO_INT('c', -1) == 0x0C);
+    assert(HEX_TO_INT('d', -1) == 0x0D);
+    assert(HEX_TO_INT('e', -1) == 0x0E);
+    assert(HEX_TO_INT('f', -1) == 0x0F);
+    assert(HEX_TO_INT('A', -1) == 0x0A);
+    assert(HEX_TO_INT('B', -1) == 0x0B);
+    assert(HEX_TO_INT('C', -1) == 0x0C);
+    assert(HEX_TO_INT('D', -1) == 0x0D);
+    assert(HEX_TO_INT('E', -1) == 0x0E);
+    assert(HEX_TO_INT('F', -1) == 0x0F);
+    assert(HEX_TO_INT('G', -1) == -1);
+    assert(HEX_TO_INT('X', -1) == -1);
+    assert(HEX_TO_INT('\0', -1) == -1);
 
-    assert(NIBBLE_TO_HEX_LOWER(0x00) == '0');
-    assert(NIBBLE_TO_HEX_LOWER(0x01) == '1');
-    assert(NIBBLE_TO_HEX_LOWER(0x02) == '2');
-    assert(NIBBLE_TO_HEX_LOWER(0x03) == '3');
-    assert(NIBBLE_TO_HEX_LOWER(0x04) == '4');
-    assert(NIBBLE_TO_HEX_LOWER(0x05) == '5');
-    assert(NIBBLE_TO_HEX_LOWER(0x06) == '6');
-    assert(NIBBLE_TO_HEX_LOWER(0x07) == '7');
-    assert(NIBBLE_TO_HEX_LOWER(0x08) == '8');
-    assert(NIBBLE_TO_HEX_LOWER(0x09) == '9');
-    assert(NIBBLE_TO_HEX_LOWER(0x0A) == 'a');
-    assert(NIBBLE_TO_HEX_LOWER(0x0B) == 'b');
-    assert(NIBBLE_TO_HEX_LOWER(0x0C) == 'c');
-    assert(NIBBLE_TO_HEX_LOWER(0x0D) == 'd');
-    assert(NIBBLE_TO_HEX_LOWER(0x0E) == 'e');
-    assert(NIBBLE_TO_HEX_LOWER(0x0F) == 'f');
+    assert(FAST_UPPERCASE_HEX_TO_INT('0') == 0x00);
+    assert(FAST_UPPERCASE_HEX_TO_INT('1') == 0x01);
+    assert(FAST_UPPERCASE_HEX_TO_INT('2') == 0x02);
+    assert(FAST_UPPERCASE_HEX_TO_INT('3') == 0x03);
+    assert(FAST_UPPERCASE_HEX_TO_INT('4') == 0x04);
+    assert(FAST_UPPERCASE_HEX_TO_INT('5') == 0x05);
+    assert(FAST_UPPERCASE_HEX_TO_INT('6') == 0x06);
+    assert(FAST_UPPERCASE_HEX_TO_INT('7') == 0x07);
+    assert(FAST_UPPERCASE_HEX_TO_INT('8') == 0x08);
+    assert(FAST_UPPERCASE_HEX_TO_INT('9') == 0x09);
+    assert(FAST_UPPERCASE_HEX_TO_INT('A') == 0x0A);
+    assert(FAST_UPPERCASE_HEX_TO_INT('B') == 0x0B);
+    assert(FAST_UPPERCASE_HEX_TO_INT('C') == 0x0C);
+    assert(FAST_UPPERCASE_HEX_TO_INT('D') == 0x0D);
+    assert(FAST_UPPERCASE_HEX_TO_INT('E') == 0x0E);
+    assert(FAST_UPPERCASE_HEX_TO_INT('F') == 0x0F);
 
-    // Test safe conversions
-    assert(SAFE_DIGIT_TO_ASCII(0) == '0');
-    assert(SAFE_DIGIT_TO_ASCII(1) == '1');
-    assert(SAFE_DIGIT_TO_ASCII(2) == '2');
-    assert(SAFE_DIGIT_TO_ASCII(3) == '3');
-    assert(SAFE_DIGIT_TO_ASCII(4) == '4');
-    assert(SAFE_DIGIT_TO_ASCII(5) == '5');
-    assert(SAFE_DIGIT_TO_ASCII(6) == '6');
-    assert(SAFE_DIGIT_TO_ASCII(7) == '7');
-    assert(SAFE_DIGIT_TO_ASCII(8) == '8');
-    assert(SAFE_DIGIT_TO_ASCII(9) == '9');
-    assert(SAFE_DIGIT_TO_ASCII(10) == '\0');
-    assert(SAFE_DIGIT_TO_ASCII(-10) == '\0');
+    assert(FAST_LOWERCASE_HEX_TO_INT('0') == 0x00);
+    assert(FAST_LOWERCASE_HEX_TO_INT('1') == 0x01);
+    assert(FAST_LOWERCASE_HEX_TO_INT('2') == 0x02);
+    assert(FAST_LOWERCASE_HEX_TO_INT('3') == 0x03);
+    assert(FAST_LOWERCASE_HEX_TO_INT('4') == 0x04);
+    assert(FAST_LOWERCASE_HEX_TO_INT('5') == 0x05);
+    assert(FAST_LOWERCASE_HEX_TO_INT('6') == 0x06);
+    assert(FAST_LOWERCASE_HEX_TO_INT('7') == 0x07);
+    assert(FAST_LOWERCASE_HEX_TO_INT('8') == 0x08);
+    assert(FAST_LOWERCASE_HEX_TO_INT('9') == 0x09);
+    assert(FAST_LOWERCASE_HEX_TO_INT('a') == 0x0A);
+    assert(FAST_LOWERCASE_HEX_TO_INT('b') == 0x0B);
+    assert(FAST_LOWERCASE_HEX_TO_INT('c') == 0x0C);
+    assert(FAST_LOWERCASE_HEX_TO_INT('d') == 0x0D);
+    assert(FAST_LOWERCASE_HEX_TO_INT('e') == 0x0E);
+    assert(FAST_LOWERCASE_HEX_TO_INT('f') == 0x0F);
 
-    assert(SAFE_ASCII_TO_DIGIT('0') == 0);
-    assert(SAFE_ASCII_TO_DIGIT('1') == 1);
-    assert(SAFE_ASCII_TO_DIGIT('2') == 2);
-    assert(SAFE_ASCII_TO_DIGIT('3') == 3);
-    assert(SAFE_ASCII_TO_DIGIT('4') == 4);
-    assert(SAFE_ASCII_TO_DIGIT('5') == 5);
-    assert(SAFE_ASCII_TO_DIGIT('6') == 6);
-    assert(SAFE_ASCII_TO_DIGIT('7') == 7);
-    assert(SAFE_ASCII_TO_DIGIT('8') == 8);
-    assert(SAFE_ASCII_TO_DIGIT('9') == 9);
-    assert(SAFE_ASCII_TO_DIGIT('\0') == -1);
-    assert(SAFE_ASCII_TO_DIGIT('X') == -1);
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x00, -1) == '0');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x01, -1) == '1');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x02, -1) == '2');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x03, -1) == '3');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x04, -1) == '4');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x05, -1) == '5');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x06, -1) == '6');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x07, -1) == '7');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x08, -1) == '8');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x09, -1) == '9');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0A, -1) == 'A');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0B, -1) == 'B');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0C, -1) == 'C');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0D, -1) == 'D');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0E, -1) == 'E');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x0F, -1) == 'F');
+    assert(NIBBLE_TO_UPPERCASE_HEX(0x1F, -1) == -1);
 
-    assert(SAFE_HEX_TO_INT('0') == 0x00);
-    assert(SAFE_HEX_TO_INT('1') == 0x01);
-    assert(SAFE_HEX_TO_INT('2') == 0x02);
-    assert(SAFE_HEX_TO_INT('3') == 0x03);
-    assert(SAFE_HEX_TO_INT('4') == 0x04);
-    assert(SAFE_HEX_TO_INT('5') == 0x05);
-    assert(SAFE_HEX_TO_INT('6') == 0x06);
-    assert(SAFE_HEX_TO_INT('7') == 0x07);
-    assert(SAFE_HEX_TO_INT('8') == 0x08);
-    assert(SAFE_HEX_TO_INT('9') == 0x09);
-    assert(SAFE_HEX_TO_INT('a') == 0x0A);
-    assert(SAFE_HEX_TO_INT('b') == 0x0B);
-    assert(SAFE_HEX_TO_INT('c') == 0x0C);
-    assert(SAFE_HEX_TO_INT('d') == 0x0D);
-    assert(SAFE_HEX_TO_INT('e') == 0x0E);
-    assert(SAFE_HEX_TO_INT('f') == 0x0F);
-    assert(SAFE_HEX_TO_INT('A') == 0x0A);
-    assert(SAFE_HEX_TO_INT('B') == 0x0B);
-    assert(SAFE_HEX_TO_INT('C') == 0x0C);
-    assert(SAFE_HEX_TO_INT('D') == 0x0D);
-    assert(SAFE_HEX_TO_INT('E') == 0x0E);
-    assert(SAFE_HEX_TO_INT('F') == 0x0F);
-    assert(SAFE_HEX_TO_INT('G') == -1);
-    assert(SAFE_HEX_TO_INT('X') == -1);
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x00, -1) == '0');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x01, -1) == '1');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x02, -1) == '2');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x03, -1) == '3');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x04, -1) == '4');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x05, -1) == '5');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x06, -1) == '6');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x07, -1) == '7');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x08, -1) == '8');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x09, -1) == '9');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0A, -1) == 'a');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0B, -1) == 'b');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0C, -1) == 'c');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0D, -1) == 'd');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0E, -1) == 'e');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x0F, -1) == 'f');
+    assert(NIBBLE_TO_LOWERCASE_HEX(0x1F, -1) == -1);
 
-    assert(SAFE_NIBBLE_TO_HEX(0x00) == '0');
-    assert(SAFE_NIBBLE_TO_HEX(0x01) == '1');
-    assert(SAFE_NIBBLE_TO_HEX(0x02) == '2');
-    assert(SAFE_NIBBLE_TO_HEX(0x03) == '3');
-    assert(SAFE_NIBBLE_TO_HEX(0x04) == '4');
-    assert(SAFE_NIBBLE_TO_HEX(0x05) == '5');
-    assert(SAFE_NIBBLE_TO_HEX(0x06) == '6');
-    assert(SAFE_NIBBLE_TO_HEX(0x07) == '7');
-    assert(SAFE_NIBBLE_TO_HEX(0x08) == '8');
-    assert(SAFE_NIBBLE_TO_HEX(0x09) == '9');
-    assert(SAFE_NIBBLE_TO_HEX(0x0A) == 'A');
-    assert(SAFE_NIBBLE_TO_HEX(0x0B) == 'B');
-    assert(SAFE_NIBBLE_TO_HEX(0x0C) == 'C');
-    assert(SAFE_NIBBLE_TO_HEX(0x0D) == 'D');
-    assert(SAFE_NIBBLE_TO_HEX(0x0E) == 'E');
-    assert(SAFE_NIBBLE_TO_HEX(0x0F) == 'F');
-    assert(SAFE_NIBBLE_TO_HEX(0x1F) == '\0');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x00) == '0');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x01) == '1');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x02) == '2');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x03) == '3');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x04) == '4');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x05) == '5');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x06) == '6');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x07) == '7');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x08) == '8');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x09) == '9');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0A) == 'A');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0B) == 'B');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0C) == 'C');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0D) == 'D');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0E) == 'E');
+    assert(FAST_NIBBLE_TO_UPPERCASE_HEX(0x0F) == 'F');
 
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x00) == '0');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x01) == '1');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x02) == '2');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x03) == '3');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x04) == '4');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x05) == '5');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x06) == '6');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x07) == '7');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x08) == '8');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x09) == '9');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0A) == 'A');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0B) == 'B');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0C) == 'C');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0D) == 'D');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0E) == 'E');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x0F) == 'F');
-    assert(SAFE_NIBBLE_TO_HEX_UPPER(0x1F) == '\0');
-
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x00) == '0');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x01) == '1');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x02) == '2');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x03) == '3');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x04) == '4');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x05) == '5');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x06) == '6');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x07) == '7');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x08) == '8');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x09) == '9');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0A) == 'a');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0B) == 'b');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0C) == 'c');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0D) == 'd');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0E) == 'e');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x0F) == 'f');
-    assert(SAFE_NIBBLE_TO_HEX_LOWER(0x1F) == '\0');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x00) == '0');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x01) == '1');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x02) == '2');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x03) == '3');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x04) == '4');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x05) == '5');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x06) == '6');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x07) == '7');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x08) == '8');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x09) == '9');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0A) == 'a');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0B) == 'b');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0C) == 'c');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0D) == 'd');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0E) == 'e');
+    assert(FAST_NIBBLE_TO_LOWERCASE_HEX(0x0F) == 'f');
 
     printf("Conversion tests passed!\n");
 }

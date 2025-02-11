@@ -53,63 +53,63 @@
 #define CHARUTIL_ALPHANUMERIC_COUNT_GROKKABLE (sizeof("0123456789abcdefghijklmnopqrstuvwxyz") - 1)
 
 /* ==========================
- * Fast Character Type Checks
+ * Character Type Checks
  * ========================== */
-#define IS_DIGIT(ch) ((unsigned)((ch) - '0') < CHARUTIL_DIGIT_COUNT)
-#define IS_LOWER(ch) ((unsigned)((ch) - 'a') < CHARUTIL_ALPHABET_COUNT)
-#define IS_UPPER(ch) ((unsigned)((ch) - 'A') < CHARUTIL_ALPHABET_COUNT)
-#define IS_ALPHA(ch) (IS_LOWER(ch) || IS_UPPER(ch))
-#define IS_ALNUM(ch) (IS_DIGIT(ch) || IS_ALPHA(ch))
-#define IS_HEX_DIGIT(ch) (IS_DIGIT(ch) || ((unsigned)((ch) - 'A') < 6) || ((unsigned)((ch) - 'a') < 6))
-#define IS_SPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v')
-#define IS_PRINTABLE(ch) ((unsigned)((ch) - 32) < 95)
+#define IS_DIGIT(ch) ((unsigned)((ch) - '0') < CHARUTIL_DIGIT_COUNT)                                               ///< Equivalent to isdigit() from <ctype.h>
+#define IS_LOWER(ch) ((unsigned)((ch) - 'a') < CHARUTIL_ALPHABET_COUNT)                                            ///< Equivalent to islower() from <ctype.h>
+#define IS_UPPER(ch) ((unsigned)((ch) - 'A') < CHARUTIL_ALPHABET_COUNT)                                            ///< Equivalent to isupper() from <ctype.h>
+#define IS_ALPHA(ch) (IS_LOWER(ch) || IS_UPPER(ch))                                                                ///< Equivalent to isalpha() from <ctype.h>
+#define IS_ALNUM(ch) (IS_DIGIT(ch) || IS_ALPHA(ch))                                                                ///< Equivalent to isalnum() from <ctype.h>
+#define IS_HEX_DIGIT(ch) (IS_DIGIT(ch) || ((unsigned)((ch) - 'A') < 6) || ((unsigned)((ch) - 'a') < 6))            ///< Equivalent to isxdigit() from <ctype.h>
+#define IS_SPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v') ///< Equivalent to isspace() from <ctype.h>
+#define IS_PRINTABLE(ch) ((unsigned)((ch) - 32) < 95)                                                              ///< Equivalent to isprint() from <ctype.h>
 #define IS_ASCII(ch) ((unsigned)(ch) < 128)
 #define IS_EXTENDED_ASCII(ch) ((unsigned)(ch) < 256)
 
 /* Grokkable Version (Slower but more understandable. Fast if compiler optimisation is enabled) */
-#define IS_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9')
-#define IS_LOWER_GROKKABLE(ch) ('a' <= (ch) && (ch) <= 'z')
-#define IS_UPPER_GROKKABLE(ch) ('A' <= (ch) && (ch) <= 'Z')
-#define IS_ALPHA_GROKKABLE(ch) (('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))
-#define IS_ALNUM_GROKKABLE(ch) (('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))
-#define IS_HEX_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'f') || ('A' <= (ch) && (ch) <= 'F')
-#define IS_SPACE_GROKKABLE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v')
-#define IS_PRINTABLE_GROKKABLE(ch) (' ' <= (ch) && (ch) <= '~')
+#define IS_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9')                                                                     ///< Equivalent to isdigit() from <ctype.h>
+#define IS_LOWER_GROKKABLE(ch) ('a' <= (ch) && (ch) <= 'z')                                                                     ///< Equivalent to islower() from <ctype.h>
+#define IS_UPPER_GROKKABLE(ch) ('A' <= (ch) && (ch) <= 'Z')                                                                     ///< Equivalent to isupper() from <ctype.h>
+#define IS_ALPHA_GROKKABLE(ch) (('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))                                   ///< Equivalent to isalpha() from <ctype.h>
+#define IS_ALNUM_GROKKABLE(ch) (('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))   ///< Equivalent to isalnum() from <ctype.h>
+#define IS_HEX_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'f') || ('A' <= (ch) && (ch) <= 'F') ///< Equivalent to isxdigit() from <ctype.h>
+#define IS_SPACE_GROKKABLE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v')    ///< Equivalent to isspace() from <ctype.h>
+#define IS_PRINTABLE_GROKKABLE(ch) (' ' <= (ch) && (ch) <= '~')                                                                 ///< Equivalent to isprint() from <ctype.h>
 #define IS_ASCII_GROKKABLE(ch) ((unsigned)(ch) < (1 << 7))
 #define IS_EXTENDED_ASCII_GROKKABLE(ch) ((unsigned)(ch) < (1 << 8))
 
 /* ==========================
- * Fast Character Case Conversion
+ * Character Case Conversion
  * ========================== */
 // e.g. 'A'=0b01000001
 // e.g. 'a'=0b01100001
-#define TO_UPPER(ch) ((ch) & ~(1 << 5))   ///< Clear 5th bit of an ascii alphabet to set as upper case
-#define TO_LOWER(ch) ((ch) | (1 << 5))    ///< Set 5th bit of an ascii alphabet to set to lower case
-#define TOGGLE_CASE(ch) ((ch) ^ (1 << 5)) ///< Flip 5th bit of an ascii alphabet to flip to between cases
+#define TO_UPPER(ch) (IS_LOWER(ch) ? ((ch) & ~(1 << 5)) : (ch))   ///< Clear 5th bit of an ascii alphabet to set as upper case. Similar to toupper() from <ctype.h>
+#define TO_LOWER(ch) (IS_UPPER(ch) ? ((ch) | (1 << 5)) : (ch))    ///< Set 5th bit of an ascii alphabet to set to lower case. Similar to tolower() from <ctype.h>
+#define TOGGLE_CASE(ch) (IS_ALPHA(ch) ? ((ch) ^ (1 << 5)) : (ch)) ///< Flip 5th bit of an ascii alphabet to flip to between cases
 
-/* Slightly safer implemention of case conversion. At least check that it's actually an alphabet character. */
-#define SAFE_TO_UPPER(ch) (IS_LOWER(ch) ? TO_UPPER(ch) : (ch))
-#define SAFE_TO_LOWER(ch) (IS_UPPER(ch) ? TO_LOWER(ch) : (ch))
-#define SAFE_TOGGLE_CASE(ch) (IS_ALPHA(ch) ? TOGGLE_CASE(ch) : (ch))
+#define FAST_TO_UPPER(ch) ((ch) & ~(1 << 5))   ///< Clear 5th bit of an ascii alphabet to set as upper case. Similar to toupper() from <ctype.h>
+#define FAST_TO_LOWER(ch) ((ch) | (1 << 5))    ///< Set 5th bit of an ascii alphabet to set to lower case. Similar to tolower() from <ctype.h>
+#define FAST_TOGGLE_CASE(ch) ((ch) ^ (1 << 5)) ///< Flip 5th bit of an ascii alphabet to flip to between cases
 
 /* ==========================
- * Fast Digit & Hex Conversions
+ * Digit & Hex Conversions
  * ========================== */
-#define DIGIT_TO_ASCII(num) ((num) + '0')
-#define ASCII_TO_DIGIT(ch) ((ch) - '0')
-#define HEX_TO_INT(ch) (IS_DIGIT(ch) ? ((ch) - '0') : (((ch) | 0x20) - 'a' + 10))
-#define NIBBLE_TO_HEX(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'A'))
-#define NIBBLE_TO_HEX_UPPER(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'A'))
-#define NIBBLE_TO_HEX_LOWER(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'a'))
+// Dev Note: No need to over optimise this. Best to just be explicit
+//           here for understandability. But provide a fast version for
+//           those who really need it and are careful enough to use it.
+#define DIGIT_TO_ASCII(num, DEFAULT) ((unsigned)(num) < 10 ? ((num) + '0') : DEFAULT)
+#define ASCII_TO_DIGIT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : -1)
+#define FAST_DIGIT_TO_ASCII(num) ((num) + '0')
+#define FAST_ASCII_TO_DIGIT(ch) ((ch) - '0')
 
-/* Slightly safer implemention of digit/hex conversion. Check that we are actually dealing with digit or hex */
-// Depreciation Consideration Warning: https://github.com/mofosyne/char-utils.h/issues/1
-#define SAFE_DIGIT_TO_ASCII(num) ((unsigned)(num) < 10 ? DIGIT_TO_ASCII(num) : '\0')
-#define SAFE_ASCII_TO_DIGIT(ch) (IS_DIGIT(ch) ? ASCII_TO_DIGIT(ch) : -1)
-#define SAFE_HEX_TO_INT(ch) (IS_DIGIT(ch) ? ((ch) - '0') : (((ch) >= 'A' && (ch) <= 'F') ? ((ch) - 'A' + 10) : (((ch) >= 'a' && (ch) <= 'f') ? ((ch) - 'a' + 10) : -1)))
-#define SAFE_NIBBLE_TO_HEX(n) ((unsigned)(n) < 16 ? NIBBLE_TO_HEX(n) : '\0')
-#define SAFE_NIBBLE_TO_HEX_UPPER(n) ((unsigned)(n) < 16 ? NIBBLE_TO_HEX_UPPER(n) : '\0')
-#define SAFE_NIBBLE_TO_HEX_LOWER(n) ((unsigned)(n) < 16 ? NIBBLE_TO_HEX_LOWER(n) : '\0')
+#define HEX_TO_INT(ch, DEFAULT) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : (((ch) >= 'A' && (ch) <= 'F') ? ((ch) - 'A' + 10) : (((ch) >= 'a' && (ch) <= 'f') ? ((ch) - 'a' + 10) : DEFAULT)))
+#define FAST_UPPERCASE_HEX_TO_INT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : ((ch) - 'A' + 10))
+#define FAST_LOWERCASE_HEX_TO_INT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : ((ch) - 'a' + 10))
+
+#define NIBBLE_TO_UPPERCASE_HEX(n, DEFAULT) ((unsigned)(n) < 16 ? ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'A')) : DEFAULT)
+#define NIBBLE_TO_LOWERCASE_HEX(n, DEFAULT) ((unsigned)(n) < 16 ? ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'a')) : DEFAULT)
+#define FAST_NIBBLE_TO_UPPERCASE_HEX(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'A'))
+#define FAST_NIBBLE_TO_LOWERCASE_HEX(n) ((n) < 10 ? ((n) + '0') : ((n) - 10 + 'a'))
 
 /* ==========================
  * Bitwise Operations
