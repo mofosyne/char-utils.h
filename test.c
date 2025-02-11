@@ -451,6 +451,12 @@ int main()
     test_character_checks();
     test_case_conversion();
     test_conversions();
+
+    for (int i = 0; i < 256; i++)
+    {
+        printf("ASCII %3d = 0x%2X: %s\n", i, i, ascii_to_diagnostics(i));
+    }
+
     printf("All tests passed successfully!\n");
     return 0;
 }
