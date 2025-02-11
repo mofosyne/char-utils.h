@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
+static_assert(CHARUTIL_BINARY_COUNT == CHARUTIL_BINARY_COUNT_GROKKABLE);
+static_assert(CHARUTIL_OCTAL_COUNT == CHARUTIL_OCTAL_COUNT_GROKKABLE);
 static_assert(CHARUTIL_DIGIT_COUNT == CHARUTIL_DIGIT_COUNT_GROKKABLE);
 static_assert(CHARUTIL_ALPHABET_COUNT == CHARUTIL_ALPHABET_COUNT_GROKKABLE);
 static_assert(CHARUTIL_ALPHANUMERIC_COUNT == CHARUTIL_ALPHANUMERIC_COUNT_GROKKABLE);
@@ -23,17 +25,22 @@ bool check_if_character_is_accepted(unsigned ch, const char *accept, unsigned ac
 void test_character_checks(void)
 {
     // Test basic checks
-    assert(IS_ALPHA('a') && IS_ALPHA('Z') && !IS_ALPHA('5'));
-    assert(IS_ALNUM('a') && IS_ALNUM('5') && !IS_ALNUM('#'));
-    assert(IS_HEX_DIGIT('F') && IS_HEX_DIGIT('f') && !IS_HEX_DIGIT('G'));
-    assert(IS_PRINTABLE('F') && IS_PRINTABLE('f') && !IS_PRINTABLE('\0'));
 
-    assert(IS_ASCII('a') && IS_ASCII('b') && !IS_ASCII(1 << 7));
-    assert(IS_EXTENDED_ASCII(' ') && IS_EXTENDED_ASCII(1 << 7) && !IS_EXTENDED_ASCII(1 << 8));
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "01";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_BINARY(ch) == accepted);
+        assert(IS_BINARY_GROKKABLE(ch) == accepted);
+    }
 
-    assert(IS_SPACE(' ') && IS_SPACE('\n') && !IS_SPACE('3'));
-    assert(IS_PUNCT('\'') && IS_PUNCT('[') && !IS_PUNCT('3'));
-    assert(IS_PUNCT('\'') && IS_PUNCT('[') && !IS_PUNCT('3'));
+    for (int ch = -0x1FF; ch < 0x1FF; ch++)
+    {
+        const char accept[] = "01234567";
+        bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
+        assert(IS_OCTAL(ch) == accepted);
+        assert(IS_OCTAL_GROKKABLE(ch) == accepted);
+    }
 
     for (int ch = -0x1FF; ch < 0x1FF; ch++)
     {
@@ -126,7 +133,6 @@ void test_character_checks(void)
     {
         const char accept[] = "!@#$%^&*_+:\"<>?;',./\\-=`|~";
         bool accepted = check_if_character_is_accepted(ch, accept, sizeof(accept) - 1);
-        printf("%x, '%c'\n", ch);
         assert(IS_SYMBOL(ch) == accepted);
     }
 
@@ -198,19 +204,65 @@ void test_conversions(void)
 {
     // Test safe conversions
 
-    assert(DIGIT_TO_ASCII(0, -1) == '0');
-    assert(DIGIT_TO_ASCII(1, -1) == '1');
-    assert(DIGIT_TO_ASCII(2, -1) == '2');
-    assert(DIGIT_TO_ASCII(3, -1) == '3');
-    assert(DIGIT_TO_ASCII(4, -1) == '4');
-    assert(DIGIT_TO_ASCII(5, -1) == '5');
-    assert(DIGIT_TO_ASCII(6, -1) == '6');
-    assert(DIGIT_TO_ASCII(7, -1) == '7');
-    assert(DIGIT_TO_ASCII(8, -1) == '8');
-    assert(DIGIT_TO_ASCII(9, -1) == '9');
-    assert(DIGIT_TO_ASCII(10, -1) == -1);
-    assert(DIGIT_TO_ASCII(-10, -1) == -1);
+    /* ASCII <-> BINARY */
+    assert(ASCII_TO_BINARY('0', -1) == 0);
+    assert(ASCII_TO_BINARY('1', -1) == 1);
+    assert(ASCII_TO_BINARY('2', -1) == -1);
+    assert(ASCII_TO_BINARY('4', -1) == -1);
 
+    assert(BINARY_TO_ASCII(0, -1) == '0');
+    assert(BINARY_TO_ASCII(1, -1) == '1');
+    assert(BINARY_TO_ASCII(2, -1) == -1);
+    assert(BINARY_TO_ASCII(4, -1) == -1);
+
+    assert(FAST_ASCII_TO_BINARY('0') == 0);
+    assert(FAST_ASCII_TO_BINARY('1') == 1);
+
+    assert(FAST_BINARY_TO_ASCII(0) == '0');
+    assert(FAST_BINARY_TO_ASCII(1) == '1');
+
+    /* ASCII <-> OCTAL */
+    assert(ASCII_TO_OCTAL('0', -1) == 0);
+    assert(ASCII_TO_OCTAL('1', -1) == 1);
+    assert(ASCII_TO_OCTAL('2', -1) == 2);
+    assert(ASCII_TO_OCTAL('3', -1) == 3);
+    assert(ASCII_TO_OCTAL('4', -1) == 4);
+    assert(ASCII_TO_OCTAL('5', -1) == 5);
+    assert(ASCII_TO_OCTAL('6', -1) == 6);
+    assert(ASCII_TO_OCTAL('7', -1) == 7);
+    assert(ASCII_TO_OCTAL(10, -1) == -1);
+    assert(ASCII_TO_OCTAL(-10, -1) == -1);
+
+    assert(OCTAL_TO_ASCII(0, -1) == '0');
+    assert(OCTAL_TO_ASCII(1, -1) == '1');
+    assert(OCTAL_TO_ASCII(2, -1) == '2');
+    assert(OCTAL_TO_ASCII(3, -1) == '3');
+    assert(OCTAL_TO_ASCII(4, -1) == '4');
+    assert(OCTAL_TO_ASCII(5, -1) == '5');
+    assert(OCTAL_TO_ASCII(6, -1) == '6');
+    assert(OCTAL_TO_ASCII(7, -1) == '7');
+    assert(OCTAL_TO_ASCII(10, -1) == -1);
+    assert(OCTAL_TO_ASCII(-10, -1) == -1);
+
+    assert(FAST_ASCII_TO_OCTAL('0') == 0);
+    assert(FAST_ASCII_TO_OCTAL('1') == 1);
+    assert(FAST_ASCII_TO_OCTAL('2') == 2);
+    assert(FAST_ASCII_TO_OCTAL('3') == 3);
+    assert(FAST_ASCII_TO_OCTAL('4') == 4);
+    assert(FAST_ASCII_TO_OCTAL('5') == 5);
+    assert(FAST_ASCII_TO_OCTAL('6') == 6);
+    assert(FAST_ASCII_TO_OCTAL('7') == 7);
+
+    assert(FAST_OCTAL_TO_ASCII(0) == '0');
+    assert(FAST_OCTAL_TO_ASCII(1) == '1');
+    assert(FAST_OCTAL_TO_ASCII(2) == '2');
+    assert(FAST_OCTAL_TO_ASCII(3) == '3');
+    assert(FAST_OCTAL_TO_ASCII(4) == '4');
+    assert(FAST_OCTAL_TO_ASCII(5) == '5');
+    assert(FAST_OCTAL_TO_ASCII(6) == '6');
+    assert(FAST_OCTAL_TO_ASCII(7) == '7');
+
+    /* ASCII <-> DIGIT */
     assert(ASCII_TO_DIGIT('0') == 0);
     assert(ASCII_TO_DIGIT('1') == 1);
     assert(ASCII_TO_DIGIT('2') == 2);
@@ -224,17 +276,18 @@ void test_conversions(void)
     assert(ASCII_TO_DIGIT('\0') == -1);
     assert(ASCII_TO_DIGIT('X') == -1);
 
-    // Test basic conversions
-    assert(FAST_DIGIT_TO_ASCII(0) == '0');
-    assert(FAST_DIGIT_TO_ASCII(1) == '1');
-    assert(FAST_DIGIT_TO_ASCII(2) == '2');
-    assert(FAST_DIGIT_TO_ASCII(3) == '3');
-    assert(FAST_DIGIT_TO_ASCII(4) == '4');
-    assert(FAST_DIGIT_TO_ASCII(5) == '5');
-    assert(FAST_DIGIT_TO_ASCII(6) == '6');
-    assert(FAST_DIGIT_TO_ASCII(7) == '7');
-    assert(FAST_DIGIT_TO_ASCII(8) == '8');
-    assert(FAST_DIGIT_TO_ASCII(9) == '9');
+    assert(DIGIT_TO_ASCII(0, -1) == '0');
+    assert(DIGIT_TO_ASCII(1, -1) == '1');
+    assert(DIGIT_TO_ASCII(2, -1) == '2');
+    assert(DIGIT_TO_ASCII(3, -1) == '3');
+    assert(DIGIT_TO_ASCII(4, -1) == '4');
+    assert(DIGIT_TO_ASCII(5, -1) == '5');
+    assert(DIGIT_TO_ASCII(6, -1) == '6');
+    assert(DIGIT_TO_ASCII(7, -1) == '7');
+    assert(DIGIT_TO_ASCII(8, -1) == '8');
+    assert(DIGIT_TO_ASCII(9, -1) == '9');
+    assert(DIGIT_TO_ASCII(10, -1) == -1);
+    assert(DIGIT_TO_ASCII(-10, -1) == -1);
 
     assert(FAST_ASCII_TO_DIGIT('0') == 0);
     assert(FAST_ASCII_TO_DIGIT('1') == 1);
@@ -247,6 +300,18 @@ void test_conversions(void)
     assert(FAST_ASCII_TO_DIGIT('8') == 8);
     assert(FAST_ASCII_TO_DIGIT('9') == 9);
 
+    assert(FAST_DIGIT_TO_ASCII(0) == '0');
+    assert(FAST_DIGIT_TO_ASCII(1) == '1');
+    assert(FAST_DIGIT_TO_ASCII(2) == '2');
+    assert(FAST_DIGIT_TO_ASCII(3) == '3');
+    assert(FAST_DIGIT_TO_ASCII(4) == '4');
+    assert(FAST_DIGIT_TO_ASCII(5) == '5');
+    assert(FAST_DIGIT_TO_ASCII(6) == '6');
+    assert(FAST_DIGIT_TO_ASCII(7) == '7');
+    assert(FAST_DIGIT_TO_ASCII(8) == '8');
+    assert(FAST_DIGIT_TO_ASCII(9) == '9');
+
+    /* ASCII <-> HEX */
     assert(HEX_TO_INT('0', -1) == 0x00);
     assert(HEX_TO_INT('1', -1) == 0x01);
     assert(HEX_TO_INT('2', -1) == 0x02);

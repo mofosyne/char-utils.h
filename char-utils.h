@@ -45,6 +45,11 @@
 /* ==========================
  * Set Sizes
  * ========================== */
+
+#define CHARUTIL_BINARY_COUNT 2
+#define CHARUTIL_BINARY_COUNT_GROKKABLE (sizeof("01") - 1)
+#define CHARUTIL_OCTAL_COUNT 8
+#define CHARUTIL_OCTAL_COUNT_GROKKABLE (sizeof("01234567") - 1)
 #define CHARUTIL_DIGIT_COUNT 10
 #define CHARUTIL_DIGIT_COUNT_GROKKABLE (sizeof("0123456789") - 1)
 #define CHARUTIL_ALPHABET_COUNT 26
@@ -55,6 +60,8 @@
 /* ==========================
  * Character Type Checks
  * ========================== */
+#define IS_BINARY(ch) ((unsigned)((ch) - '0') < CHARUTIL_BINARY_COUNT)                                  ///< single unsigned cmp, no branches for speed.
+#define IS_OCTAL(ch) ((unsigned)((ch) - '0') < CHARUTIL_OCTAL_COUNT)                                    ///< single unsigned cmp, no branches for speed.
 #define IS_DIGIT(ch) ((unsigned)((ch) - '0') < CHARUTIL_DIGIT_COUNT)                                    ///< single unsigned cmp, no branches for speed. Equivalent to isdigit() from <ctype.h>
 #define IS_LOWER(ch) ((unsigned)((ch) - 'a') < CHARUTIL_ALPHABET_COUNT)                                 ///< single unsigned cmp, no branches for speed. Equivalent to islower() from <ctype.h>
 #define IS_UPPER(ch) ((unsigned)((ch) - 'A') < CHARUTIL_ALPHABET_COUNT)                                 ///< single unsigned cmp, no branches for speed. Equivalent to isupper() from <ctype.h>
@@ -67,11 +74,13 @@
 #define IS_EXTENDED_ASCII(ch) ((unsigned)(ch) < 256) ///< single unsigned cmp, no branches for speed.
 
 #define IS_SPACE(ch) ((ch) == ' ' || (ch) == '\t' || (ch) == '\n' || (ch) == '\r' || (ch) == '\f' || (ch) == '\v') ///< Equivalent to isspace() from <ctype.h>
-#define IS_PUNCT(ch) ((IS_PRINTABLE(ch)) && !(IS_ALNUM(ch) || IS_SPACE(ch)))
+#define IS_PUNCT(ch) ((IS_PRINTABLE(ch)) && !(IS_ALNUM(ch) || IS_SPACE(ch)))                                       ///< Equivalent to ispunct() from <ctype.h>
 #define IS_BRACKET(ch) ((ch) == '(' || (ch) == ')' || (ch) == '{' || (ch) == '}' || (ch) == '[' || (ch) == ']')
 #define IS_SYMBOL(ch) ((IS_PUNCT(ch)) && !(IS_BRACKET(ch)))
 
 /* Grokkable Version (Slower but more understandable. Fast if compiler optimisation is enabled) */
+#define IS_BINARY_GROKKABLE(ch) ((ch) == '0' || (ch) == '1')
+#define IS_OCTAL_GROKKABLE(ch) ((ch) >= '0' && (ch) <= '7')
 #define IS_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9')                                                                     ///< Equivalent to isdigit() from <ctype.h>
 #define IS_LOWER_GROKKABLE(ch) ('a' <= (ch) && (ch) <= 'z')                                                                     ///< Equivalent to islower() from <ctype.h>
 #define IS_UPPER_GROKKABLE(ch) ('A' <= (ch) && (ch) <= 'Z')                                                                     ///< Equivalent to isupper() from <ctype.h>
@@ -99,8 +108,19 @@
 // Dev Note: No need to over optimise this. Best to just be explicit
 //           here for understandability. But provide a fast version for
 //           those who really need it and are careful enough to use it.
+
+#define ASCII_TO_BINARY(ch, DEFAULT) (((ch) == '0' || (ch) == '1') ? ((ch) - '0') : DEFAULT) ///< Similar to strtol() from <ctype.h>
+#define BINARY_TO_ASCII(num, DEFAULT) ((unsigned)(num) < 2 ? ((num) + '0') : DEFAULT)
+#define FAST_ASCII_TO_BINARY(ch) ((ch) - '0')
+#define FAST_BINARY_TO_ASCII(num) ((num) + '0')
+
+#define ASCII_TO_OCTAL(ch, DEFAULT) (('0' <= (ch) && (ch) <= '7') ? ((ch) - '0') : DEFAULT) ///< Similar to strtol() from <ctype.h>
+#define OCTAL_TO_ASCII(num, DEFAULT) ((unsigned)(num) < 8 ? ((num) + '0') : DEFAULT)
+#define FAST_ASCII_TO_OCTAL(ch) ((ch) - '0')
+#define FAST_OCTAL_TO_ASCII(num) ((num) + '0')
+
+#define ASCII_TO_DIGIT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : -1) ///< Similar to strtol() from <ctype.h>
 #define DIGIT_TO_ASCII(num, DEFAULT) ((unsigned)(num) < 10 ? ((num) + '0') : DEFAULT)
-#define ASCII_TO_DIGIT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : -1)
 #define FAST_DIGIT_TO_ASCII(num) ((num) + '0')
 #define FAST_ASCII_TO_DIGIT(ch) ((ch) - '0')
 
