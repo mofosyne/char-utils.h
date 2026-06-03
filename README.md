@@ -16,6 +16,33 @@ but you can install it as a normal C header file as well!
 Note that some of these macro already have a C standard library equvalent,
 so you are encourage to use C standard library function for portability.
 
+## Why use this over `<ctype.h>`?
+
+If you are writing hosted C on a modern desktop or server, you probably don't need this —
+`isdigit()` and friends will be inlined by the compiler at `-O2` and the difference disappears.
+
+This library is aimed at two cases where `<ctype.h>` falls short:
+
+**1. Embedded / bare-metal C without a standard library**
+Many microcontrollers either lack `<ctype.h>` entirely or ship it behind a paid compiler
+licence. This header has no dependencies and drops into any C project with a single file copy.
+
+**2. Constrained compilers with optimisation off**
+On most libc implementations (`glibc`, `newlib`), `isdigit()` is not a simple comparison —
+it performs a locale table lookup through thread-local storage on every call:
+
+```c
+/* typical glibc implementation */
+return __ctype_b_loc()[c] & _ISdigit;  /* pointer dereference + TLS indirection */
+```
+
+Many embedded compilers run without optimisation (locked behind a paywall, or disabled to
+avoid compiler bugs), so this overhead is real. The macros here compile to a single unsigned
+compare regardless of optimisation level.
+
+The `FAST_` variants go further — they skip all validation and are pure arithmetic, useful
+in tight inner loops (e.g. parsing a high-baud serial stream) where input is already known good.
+
 ## Usage
 
 The library consists of one header file, easily integrated into your project manually or via [clib](https://github.com/clibs/clib)
