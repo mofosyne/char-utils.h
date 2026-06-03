@@ -28,7 +28,6 @@
 #ifndef CHAR_UTILS_H
 #define CHAR_UTILS_H
 
-#include <stddef.h> /* NULL */
 
 /* Design Notes:
  * The below macros are focused on being compact even if optimisation is
@@ -149,7 +148,7 @@
 static inline const char *ascii_to_diagnostics(int ch)
 {
     if ((unsigned)ch > 255)
-        return NULL;
+        return 0;
     static const char *ascii_lut[256] = {
         "[NUL]",  "[SOH]",  "[STX]",  "[ETX]",  "[EOT]",  "[ENQ]",  "[ACK]",  "[BEL]",  "[BS]",   "[TAB]",  "[LF]",   "[VT]",   "[FF]",   "[CR]",   "[SO]",   "[SI]",   "[DLE]",  "[DC1]",  "[DC2]",
         "[DC3]",  "[DC4]",  "[NAK]",  "[SYN]",  "[ETB]",  "[CAN]",  "[EM]",   "[SUB]",  "[ESC]",  "[FS]",   "[GS]",   "[RS]",   "[US]",   " ",      "!",      "\"",     "#",      "$",      "%",
