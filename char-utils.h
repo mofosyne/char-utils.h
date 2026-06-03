@@ -145,10 +145,10 @@
 /* ==========================
  * ASCII Diagnostic
  * ========================== */
-static inline const char *ascii_to_diagnostics(int ch)
+static inline const char *ascii_to_diagnostics(int ch, const char *default_str)
 {
     if ((unsigned)ch > 255)
-        return 0;
+        return default_str;
     static const char *ascii_lut[256] = {
         "[NUL]",  "[SOH]",  "[STX]",  "[ETX]",  "[EOT]",  "[ENQ]",  "[ACK]",  "[BEL]",  "[BS]",   "[TAB]",  "[LF]",   "[VT]",   "[FF]",   "[CR]",   "[SO]",   "[SI]",   "[DLE]",  "[DC1]",  "[DC2]",
         "[DC3]",  "[DC4]",  "[NAK]",  "[SYN]",  "[ETB]",  "[CAN]",  "[EM]",   "[SUB]",  "[ESC]",  "[FS]",   "[GS]",   "[RS]",   "[US]",   " ",      "!",      "\"",     "#",      "$",      "%",
