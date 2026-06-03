@@ -1,6 +1,6 @@
 {
   "name": "char-utils",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "repo": "mofosyne/char-utils.h",
   "description": "Small C utility library macros and functions for char handling. e.g. conversion or checks for hex, digits and ascii values",
   "keywords": ["char", "ascii", "macros", "hex", "digits"],
