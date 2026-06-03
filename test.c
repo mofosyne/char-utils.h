@@ -446,11 +446,61 @@ void test_conversions(void)
     printf("Conversion tests passed!\n");
 }
 
+void test_nibble_operations(void)
+{
+    assert(HIGH_NIBBLE(0x00) == 0x0);
+    assert(HIGH_NIBBLE(0x0F) == 0x0);
+    assert(HIGH_NIBBLE(0xF0) == 0xF);
+    assert(HIGH_NIBBLE(0xFF) == 0xF);
+    assert(HIGH_NIBBLE(0xAB) == 0xA);
+    assert(HIGH_NIBBLE(0xCD) == 0xC);
+
+    assert(LOW_NIBBLE(0x00) == 0x0);
+    assert(LOW_NIBBLE(0x0F) == 0xF);
+    assert(LOW_NIBBLE(0xF0) == 0x0);
+    assert(LOW_NIBBLE(0xFF) == 0xF);
+    assert(LOW_NIBBLE(0xAB) == 0xB);
+    assert(LOW_NIBBLE(0xCD) == 0xD);
+
+    for (int byte = 0; byte <= 255; byte++)
+    {
+        assert(((HIGH_NIBBLE(byte) << 4) | LOW_NIBBLE(byte)) == byte);
+    }
+
+    printf("Nibble operation tests passed!\n");
+}
+
+void test_ascii_diagnostics(void)
+{
+    assert(strcmp(ascii_to_diagnostics(0), "[NUL]") == 0);
+    assert(strcmp(ascii_to_diagnostics(1), "[SOH]") == 0);
+    assert(strcmp(ascii_to_diagnostics(8), "[BS]") == 0);
+    assert(strcmp(ascii_to_diagnostics(9), "[TAB]") == 0);
+    assert(strcmp(ascii_to_diagnostics(10), "[LF]") == 0);
+    assert(strcmp(ascii_to_diagnostics(13), "[CR]") == 0);
+    assert(strcmp(ascii_to_diagnostics(27), "[ESC]") == 0);
+    assert(strcmp(ascii_to_diagnostics(32), " ") == 0);
+    assert(strcmp(ascii_to_diagnostics('!'), "!") == 0);
+    assert(strcmp(ascii_to_diagnostics('0'), "0") == 0);
+    assert(strcmp(ascii_to_diagnostics('A'), "A") == 0);
+    assert(strcmp(ascii_to_diagnostics('Z'), "Z") == 0);
+    assert(strcmp(ascii_to_diagnostics('a'), "a") == 0);
+    assert(strcmp(ascii_to_diagnostics('z'), "z") == 0);
+    assert(strcmp(ascii_to_diagnostics('~'), "~") == 0);
+    assert(strcmp(ascii_to_diagnostics(127), "[DEL]") == 0);
+    assert(strcmp(ascii_to_diagnostics(128), "[0x80]") == 0);
+    assert(strcmp(ascii_to_diagnostics(255), "[0xFF]") == 0);
+
+    printf("ASCII diagnostics tests passed!\n");
+}
+
 int main()
 {
     test_character_checks();
     test_case_conversion();
     test_conversions();
+    test_nibble_operations();
+    test_ascii_diagnostics();
 
     for (int i = 0; i < 256; i++)
     {
