@@ -28,6 +28,8 @@
 #ifndef CHAR_UTILS_H
 #define CHAR_UTILS_H
 
+#include <stddef.h> /* NULL */
+
 /* Design Notes:
  * The below macros are focused on being compact even if optimisation is
  * disabled by relying only on arithmic operation and comparison, rather
@@ -144,8 +146,10 @@
 /* ==========================
  * ASCII Diagnostic
  * ========================== */
-static inline const char *ascii_to_diagnostics(unsigned char ch)
+static inline const char *ascii_to_diagnostics(int ch)
 {
+    if ((unsigned)ch > 255)
+        return NULL;
     static const char *ascii_lut[256] = {
         "[NUL]",  "[SOH]",  "[STX]",  "[ETX]",  "[EOT]",  "[ENQ]",  "[ACK]",  "[BEL]",  "[BS]",   "[TAB]",  "[LF]",   "[VT]",   "[FF]",   "[CR]",   "[SO]",   "[SI]",   "[DLE]",  "[DC1]",  "[DC2]",
         "[DC3]",  "[DC4]",  "[NAK]",  "[SYN]",  "[ETB]",  "[CAN]",  "[EM]",   "[SUB]",  "[ESC]",  "[FS]",   "[GS]",   "[RS]",   "[US]",   " ",      "!",      "\"",     "#",      "$",      "%",
@@ -161,7 +165,7 @@ static inline const char *ascii_to_diagnostics(unsigned char ch)
         "[0xD1]", "[0xD2]", "[0xD3]", "[0xD4]", "[0xD5]", "[0xD6]", "[0xD7]", "[0xD8]", "[0xD9]", "[0xDA]", "[0xDB]", "[0xDC]", "[0xDD]", "[0xDE]", "[0xDF]", "[0xE0]", "[0xE1]", "[0xE2]", "[0xE3]",
         "[0xE4]", "[0xE5]", "[0xE6]", "[0xE7]", "[0xE8]", "[0xE9]", "[0xEA]", "[0xEB]", "[0xEC]", "[0xED]", "[0xEE]", "[0xEF]", "[0xF0]", "[0xF1]", "[0xF2]", "[0xF3]", "[0xF4]", "[0xF5]", "[0xF6]",
         "[0xF7]", "[0xF8]", "[0xF9]", "[0xFA]", "[0xFB]", "[0xFC]", "[0xFD]", "[0xFE]", "[0xFF]"};
-    return ascii_lut[ch];
+    return ascii_lut[(unsigned char)ch];
 }
 
 #endif // CHAR_UTILS_H

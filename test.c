@@ -452,10 +452,14 @@ int main()
     test_case_conversion();
     test_conversions();
 
+    /* ascii_to_diagnostics: valid range 0-255, NULL outside */
     for (int i = 0; i < 256; i++)
     {
+        assert(ascii_to_diagnostics(i) != NULL);
         printf("ASCII %3d = 0x%2X: %s\n", i, i, ascii_to_diagnostics(i));
     }
+    assert(ascii_to_diagnostics(-1) == NULL);   /* EOF */
+    assert(ascii_to_diagnostics(256) == NULL);  /* out of range */
 
     printf("All tests passed successfully!\n");
     return 0;
