@@ -9,7 +9,7 @@ PREFIX  ?= /usr/local
 #CFLAGS += -Wall -std=c99 -pedantic
 CFLAGS += -Wall -std=c11 -pedantic
 
-.PHONY:
+.PHONY: all
 all: test
 
 .PHONY: readme_update
@@ -24,15 +24,15 @@ format:
 	clang-format -i *.c
 	clang-format -i *.h
 
-.PHONY:
+.PHONY: test
 test: test.c char-utils.h
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test test.c
 	./test
 
-.PHONY:
+.PHONY: %.o
 %.o: %.c
 	$(CC) $(DEP_FLAG) $(CFLAGS) $(LDFLAGS) -o $@ -c $<
 
-.PHONY:
+.PHONY: clean
 clean:
 	rm -f test

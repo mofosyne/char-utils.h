@@ -264,18 +264,18 @@ void test_conversions(void)
     assert(FAST_OCTAL_TO_ASCII(7) == '7');
 
     /* ASCII <-> DIGIT */
-    assert(ASCII_TO_DIGIT('0') == 0);
-    assert(ASCII_TO_DIGIT('1') == 1);
-    assert(ASCII_TO_DIGIT('2') == 2);
-    assert(ASCII_TO_DIGIT('3') == 3);
-    assert(ASCII_TO_DIGIT('4') == 4);
-    assert(ASCII_TO_DIGIT('5') == 5);
-    assert(ASCII_TO_DIGIT('6') == 6);
-    assert(ASCII_TO_DIGIT('7') == 7);
-    assert(ASCII_TO_DIGIT('8') == 8);
-    assert(ASCII_TO_DIGIT('9') == 9);
-    assert(ASCII_TO_DIGIT('\0') == -1);
-    assert(ASCII_TO_DIGIT('X') == -1);
+    assert(ASCII_TO_DIGIT('0', -1) == 0);
+    assert(ASCII_TO_DIGIT('1', -1) == 1);
+    assert(ASCII_TO_DIGIT('2', -1) == 2);
+    assert(ASCII_TO_DIGIT('3', -1) == 3);
+    assert(ASCII_TO_DIGIT('4', -1) == 4);
+    assert(ASCII_TO_DIGIT('5', -1) == 5);
+    assert(ASCII_TO_DIGIT('6', -1) == 6);
+    assert(ASCII_TO_DIGIT('7', -1) == 7);
+    assert(ASCII_TO_DIGIT('8', -1) == 8);
+    assert(ASCII_TO_DIGIT('9', -1) == 9);
+    assert(ASCII_TO_DIGIT('\0', -1) == -1);
+    assert(ASCII_TO_DIGIT('X', -1) == -1);
 
     assert(DIGIT_TO_ASCII(0, -1) == '0');
     assert(DIGIT_TO_ASCII(1, -1) == '1');

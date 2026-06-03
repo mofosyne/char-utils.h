@@ -88,7 +88,7 @@
 #define IS_UPPER_GROKKABLE(ch) ('A' <= (ch) && (ch) <= 'Z')                                                                     ///< Equivalent to isupper() from <ctype.h>
 #define IS_ALPHA_GROKKABLE(ch) (('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))                                   ///< Equivalent to isalpha() from <ctype.h>
 #define IS_ALNUM_GROKKABLE(ch) (('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'z') || ('A' <= (ch) && (ch) <= 'Z'))   ///< Equivalent to isalnum() from <ctype.h>
-#define IS_HEX_DIGIT_GROKKABLE(ch) ('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'f') || ('A' <= (ch) && (ch) <= 'F') ///< Equivalent to isxdigit() from <ctype.h>
+#define IS_HEX_DIGIT_GROKKABLE(ch) (('0' <= (ch) && (ch) <= '9') || ('a' <= (ch) && (ch) <= 'f') || ('A' <= (ch) && (ch) <= 'F')) ///< Equivalent to isxdigit() from <ctype.h>
 #define IS_PRINTABLE_GROKKABLE(ch) (' ' <= (ch) && (ch) <= '~')                                                                 ///< Equivalent to isprint() from <ctype.h>
 
 /* ==========================
@@ -121,7 +121,7 @@
 #define FAST_ASCII_TO_OCTAL(ch) ((ch) - '0')
 #define FAST_OCTAL_TO_ASCII(num) ((num) + '0')
 
-#define ASCII_TO_DIGIT(ch) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : -1) ///< Similar to strtol() from <ctype.h>
+#define ASCII_TO_DIGIT(ch, DEFAULT) (('0' <= (ch) && (ch) <= '9') ? ((ch) - '0') : DEFAULT) ///< Similar to strtol() from <ctype.h>
 #define DIGIT_TO_ASCII(num, DEFAULT) ((unsigned)(num) < 10 ? ((num) + '0') : DEFAULT)
 #define FAST_DIGIT_TO_ASCII(num) ((num) + '0')
 #define FAST_ASCII_TO_DIGIT(ch) ((ch) - '0')
